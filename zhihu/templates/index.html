@@ -1,0 +1,70 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zhihu Hotlist</title>
+</head>
+<body>
+    <h1>Zhihu Hotlist</h1>
+    <button onclick="updateData()">更新</button>
+    <ul id="hotlist">
+          {% for entry in feed %}
+            <li>
+                {% if entry.new %}
+                    <span style="color: green;">[新]</span>
+                {% else %}
+                    <span style="color: grey;">[旧]</span>
+                {% endif %}
+                {% if entry.isRead %}
+                    <span style="color: grey;">[已读]</span>
+                {% else %}
+                   
+                    <a href="#" onclick="markAsRead('{{ entry.cardId }}', '#'); return false;" style="color: green;">[未读]</a>
+                {% endif %}
+                {% if entry.isRead %}
+                <span style="color: grey;">{{ entry.itemID }}-</span>
+                <a href="#" onclick="markAsRead('{{ entry.cardId }}', '{{ entry.link }}'); return false;" style="color: grey;">{{ entry.title }}</a>
+                {% else %}
+                <span >{{ entry.itemID }}-</span>
+                <a href="#" onclick="markAsRead('{{ entry.cardId }}', '{{ entry.link }}'); return false;">{{ entry.title }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+<script>
+    function updateData() {
+        fetch('/update')  // 发送更新请求到服务器的更新入口
+            .then(response => {
+                if (response.ok) {
+                    console.log("更新成功");
+                    location.reload();  // 刷新页面以获取最新数据
+                } else {
+                    console.error("更新失败");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    function markAsRead(cardId, link) {
+        fetch('/markAsRead?cardId=' + cardId)  // 发送更新请求到服务器的更新入口
+            .then(response => {
+                if (response.ok) {
+                    console.log("已读成功");
+                    if (link === "#") {
+                        location.reload();  // 如果链接为"#"，则重新加载页面
+                    } else {
+                        window.location.href = link; // 将当前页面的 URL 更改为所需链接
+                   }
+                } else {
+                    console.error("已读失败");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+
+</body>
+</html>
