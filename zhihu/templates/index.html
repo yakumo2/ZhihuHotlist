@@ -76,7 +76,8 @@
                     if (link === "#") {
                         location.reload();  // 如果链接为"#"，则重新加载页面
                     } else {
-                        window.location.href = link; // 将当前页面的 URL 更改为所需链接
+                        window.open(link, '_blank'); // 在新窗口中打开链接
+                        location.reload(); // 刷新当前页面
                    }
                 } else {
                     console.error("已读失败");
